@@ -202,7 +202,7 @@
             <span>應繳總金額：</span>
             <span class="total-price">NT$ <span id="total-amount">0</span></span>
         </div>
-        <button class="submit-btn" onclick="generateOrder()">📋 複製訂單明細</button>
+        <button class="submit-btn" onclick="submitOrder()">🚀 確認送出訂單</button>
     </div>
 
     <script>
@@ -254,8 +254,8 @@
             }
         }
 
-        // 生成訂單明細並複製到剪貼簿 (模擬送出功能)
-        function generateOrder() {
+       // 送出訂單並寫入 Google 試算表後台
+        function submitOrder() {
             const name = document.getElementById('parent-name').value;
             const ship = document.getElementById('starship').value;
 
@@ -269,22 +269,53 @@
                 return;
             }
 
-            let orderSummary = `【星艦探險隊 - 伴手禮訂單】\n👤 姓名：${name}\n🚀 星艦：${ship}\n🛍️ 訂購明細：\n`;
-            
-            products.forEach(product => {
-                const qty = parseInt(document.getElementById(`qty-${product.id}`).value);
-                if (qty > 0) {
-                    orderSummary += ` - ${product.name} x ${qty} ($${qty * product.price})\n`;
-                }
+            // 更改按鈕狀態，避免重複點擊
+            const submitBtn = document.querySelector('.submit-btn');
+            submitBtn.innerText = "⏳ 資料傳送中...";
+            submitBtn.disabled = true;
+
+            // 打包所有商品數量與資料
+            const orderData = new URLSearchParams({
+                "name": name,
+                "ship": ship,
+                "qty_onion_l": document.getElementById('qty-onion_l').value,
+                "qty_onion_s": document.getElementById('qty-onion_s').value,
+                "qty_onion_chip": document.getElementById('qty-onion_chip').value,
+                "qty_soy_sauce": document.getElementById('qty-soy_sauce').value,
+                "qty_mushroom": document.getElementById('qty-mushroom').value,
+                "qty_salt_egg": document.getElementById('qty-salt_egg').value,
+                "qty_century_egg": document.getElementById('qty-century_egg').value,
+                "qty_tofu": document.getElementById('qty-tofu').value,
+                "qty_rice": document.getElementById('qty-rice').value,
+                "total": total
             });
 
-            orderSummary += `\n💰 應繳總額：NT$ ${total}\n(請於4/29當日將現金交給鈿樺老師)`;
+            // 🔴 請將下方的網址，替換成您剛剛在 Apps Script 複製的網址
+            const scriptURL = "https://script.google.com/macros/s/AKfycbzoztw85JBEcPH-XLdddVHgC32nTeiOm9Sb3E-PV6I77C6GSwBibQVIwazICVpzpi4b/exec";
 
-            // 複製到剪貼簿
-            navigator.clipboard.writeText(orderSummary).then(() => {
-                alert("✅ 訂單明細已複製！\n\n請直接到 LINE 群組「貼上」，回報給鈿樺老師即可！\n\n以下為您的明細預覽：\n\n" + orderSummary);
+            // 發送資料到後台
+            fetch(scriptURL, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: orderData.toString()
+            }).then(() => {
+                alert("✅ 訂單已成功送出！款項請於 4/29 交給各車隨車老師。");
+                
+                // 送出後清空表單
+                document.getElementById('parent-name').value = '';
+                document.getElementById('starship').value = '';
+                products.forEach(p => document.getElementById(`qty-${p.id}`).value = 0);
+                total = 0;
+                totalAmountEl.innerText = total;
+                
+                // 恢復按鈕狀態
+                submitBtn.innerText = "🚀 確認送出訂單";
+                submitBtn.disabled = false;
             }).catch(err => {
-                alert("複製失敗，請手動截圖本畫面。");
+                alert("⚠️ 傳送發生異常，請確認網路狀態或稍後再試。");
+                submitBtn.innerText = "🚀 確認送出訂單";
+                submitBtn.disabled = false;
             });
         }
     </script>
