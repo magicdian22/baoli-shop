@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>星艦探險隊 - 在地伴手禮預購</title>
+    <style>
+        :root {
+            --primary-color: #2b5c3a; /* 保力林場綠 */
+            --accent-color: #d4a373; /* 排灣族木雕金 */
+            --bg-color: #f4f1ea; /* 羊皮紙底色 */
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-image: url('data:image/svg+xml;utf8,<svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><circle cx="2" cy="2" r="1" fill="%23d4a373" opacity="0.3"/></svg>');
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-bottom: 5px solid var(--accent-color);
+        }
+
+        header h1 { margin: 0; font-size: 1.8rem; }
+        header p { margin: 5px 0 0; font-size: 0.9rem; opacity: 0.9; }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        .section-title {
+            border-left: 5px solid var(--accent-color);
+            padding-left: 10px;
+            color: var(--primary-color);
+            margin-top: 30px;
+        }
+
+        .info-group {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .input-box {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        input[type="text"], select, input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 15px;
+        }
+
+        .product-card {
+            background: var(--card-bg);
+            border: 2px solid var(--primary-color);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-color);
+        }
+
+        .product-icon { font-size: 2.5rem; margin-bottom: 10px; }
+        .product-name { font-weight: bold; font-size: 1.1rem; margin-bottom: 5px; }
+        .product-price { color: #e63946; font-weight: bold; margin-bottom: 15px; }
+        
+        .qty-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .qty-btn {
+            background-color: var(--bg-color);
+            border: 1px solid #ccc;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .qty-btn:hover { background-color: var(--accent-color); color: white; border-color: var(--accent-color); }
+
+        .qty-input {
+            width: 50px !important;
+            text-align: center;
+            font-weight: bold;
+            border: none !important;
+            background: transparent;
+        }
+
+        /* 隱藏 number 的箭頭 */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+
+        .checkout-bar {
+            position: sticky;
+            bottom: 0;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.2);
+            z-index: 100;
+        }
+
+        .total-price { font-size: 1.5rem; font-weight: bold; color: var(--accent-color); }
+
+        .submit-btn {
+            background-color: var(--accent-color);
+            color: #333;
+            border: none;
+            padding: 10px 25px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .submit-btn:hover { background-color: #e3b88d; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🧅 國境之南：星艦探險隊</h1>
+        <p>保力生態與海洋解密 - 在地伴手禮預購站</p>
+    </header>
+
+    <div class="container">
+        <h2 class="section-title">👤 探險員資料</h2>
+        <div class="info-group">
+            <div class="input-box">
+                <label for="parent-name">訂購人姓名 (家長/學生)</label>
+                <input type="text" id="parent-name" placeholder="例如：恩寧爸爸" required>
+            </div>
+            <div class="input-box">
+                <label for="starship">所屬星艦</label>
+                <select id="starship">
+                    <option value="" disabled selected>請選擇星艦...</option>
+                    <option value="第一星艦">🚀 第一星艦</option>
+                    <option value="第二星艦">🚀 第二星艦</option>
+                    <option value="第三星艦">🚀 第三星艦</option>
+                    <option value="第四星艦">🚀 第四星艦</option>
+                </select>
+            </div>
+        </div>
+
+        <h2 class="section-title">🛍️ 產地直送物資清單</h2>
+        <div class="product-grid" id="product-container">
+            </div>
+    </div>
+
+    <div class="checkout-bar">
+        <div>
+            <span>應繳總金額：</span>
+            <span class="total-price">NT$ <span id="total-amount">0</span></span>
+        </div>
+        <button class="submit-btn" onclick="generateOrder()">📋 複製訂單明細</button>
+    </div>
+
+    <script>
+        // 產品資料庫
+        const products = [
+            { id: 'onion_l', name: '車城黃洋蔥(大網袋)', price: 100, icon: '🧅' },
+            { id: 'onion_s', name: '車城紅洋蔥(小網袋)', price: 70, icon: '🧅' },
+            { id: 'onion_chip', name: '職人洋蔥脆片', price: 50, icon: '🍘' },
+            { id: 'soy_sauce', name: '洋蔥醬油', price: 220, icon: '🧉' },
+            { id: 'mushroom', name: '雨來菇', price: 80, icon: '🌱' },
+            { id: 'salt_egg', name: '在地鹹蛋', price: 75, icon: '🥚' },
+            { id: 'century_egg', name: '在地皮蛋', price: 95, icon: '🥚' },
+            { id: 'tofu', name: '在地豆腐乳', price: 150, icon: '🏺' },
+            { id: 'rice', name: '在地包裝米', price: 239, icon: '🌾' }
+        ];
+
+        const container = document.getElementById('product-container');
+        const totalAmountEl = document.getElementById('total-amount');
+
+        // 動態生成產品卡片
+        products.forEach(product => {
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            card.innerHTML = `
+                <div class="product-icon">${product.icon}</div>
+                <div class="product-name">${product.name}</div>
+                <div class="product-price">$${product.price}</div>
+                <div class="qty-controls">
+                    <button class="qty-btn" onclick="updateQty('${product.id}', -1, ${product.price})">-</button>
+                    <input type="number" id="qty-${product.id}" class="qty-input" value="0" min="0" readonly>
+                    <button class="qty-btn" onclick="updateQty('${product.id}', 1, ${product.price})">+</button>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+
+        let total = 0;
+
+        // 更新數量與總價的邏輯
+        function updateQty(id, change, price) {
+            const input = document.getElementById(`qty-${id}`);
+            let currentQty = parseInt(input.value);
+            let newQty = currentQty + change;
+            
+            if (newQty >= 0) {
+                input.value = newQty;
+                total += change * price;
+                totalAmountEl.innerText = total;
+            }
+        }
+
+        // 生成訂單明細並複製到剪貼簿 (模擬送出功能)
+        function generateOrder() {
+            const name = document.getElementById('parent-name').value;
+            const ship = document.getElementById('starship').value;
+
+            if (!name || !ship) {
+                alert("⚠️ 請先填寫「訂購人姓名」與「所屬星艦」喔！");
+                return;
+            }
+
+            if (total === 0) {
+                alert("⚠️ 您尚未選擇任何商品！");
+                return;
+            }
+
+            let orderSummary = `【星艦探險隊 - 伴手禮訂單】\n👤 姓名：${name}\n🚀 星艦：${ship}\n🛍️ 訂購明細：\n`;
+            
+            products.forEach(product => {
+                const qty = parseInt(document.getElementById(`qty-${product.id}`).value);
+                if (qty > 0) {
+                    orderSummary += ` - ${product.name} x ${qty} ($${qty * product.price})\n`;
+                }
+            });
+
+            orderSummary += `\n💰 應繳總額：NT$ ${total}\n(請於4/29出發當日將現金交給隨車老師)`;
+
+            // 複製到剪貼簿
+            navigator.clipboard.writeText(orderSummary).then(() => {
+                alert("✅ 訂單明細已複製！\n\n請直接到 LINE 群組「貼上」，回報給老師即可！\n\n以下為您的明細預覽：\n\n" + orderSummary);
+            }).catch(err => {
+                alert("複製失敗，請手動截圖本畫面。");
+            });
+        }
+    </script>
+</body>
+</html>
