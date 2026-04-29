@@ -278,11 +278,11 @@
                 }
             });
 
-            orderSummary += `\n💰 應繳總額：NT$ ${total}\n(請於4/29出發當日將現金交給隨車老師)`;
+            orderSummary += `\n💰 應繳總額：NT$ ${total}\n(請於4/29當日將現金交給鈿樺老師)`;
 
             // 複製到剪貼簿
             navigator.clipboard.writeText(orderSummary).then(() => {
-                alert("✅ 訂單明細已複製！\n\n請直接到 LINE 群組「貼上」，回報給老師即可！\n\n以下為您的明細預覽：\n\n" + orderSummary);
+                alert("✅ 訂單明細已複製！\n\n請直接到 LINE 群組「貼上」，回報給鈿樺老師即可！\n\n以下為您的明細預覽：\n\n" + orderSummary);
             }).catch(err => {
                 alert("複製失敗，請手動截圖本畫面。");
             });
